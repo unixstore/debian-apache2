@@ -8,14 +8,13 @@ env:
   git_org: "${{ github.repository_owner }}"
   git_repo: "${{ github.repository }}"
   pkg_os: "debian"
-  pkg_name: "$( echo '${{ env.git_repo }}' | awk -F '${{ env.pkg_os }}-' '{print $2}' )"
 
 jobs:
   build:
     runs-on: ubuntu-latest
     name: "Build"
     steps:
-      - run: echo "PKG_NAME=${{ env.pkg_name }}" >> $GITHUB_ENV
+      - run: echo "PKG_NAME=$( echo '${{ env.git_repo }}' | awk -F '${{ env.pkg_os }}-' '{print $2}' )" >> $GITHUB_ENV
         shell: bash
       - run: echo "${{ env.PKG_NAME }} / ${{ env.git_srv }} / ${{ env.git_repo }} / ${{ env.pkg_os }}"
         shell: bash
