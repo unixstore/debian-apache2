@@ -16,7 +16,9 @@ jobs:
     steps:
       - run: echo "PKG_NAME=$( echo '${{ env.repo }}' | awk -F '${{ env.os }}-' '{ print $2 }' )" >> $GITHUB_ENV
         shell: bash
-      - run: echo "${{ env.domain }} / ${{ env.owner }} / ${{ env.repo }} / ${{ env.os }} / ${{ env.PKG_NAME }}"
+      - run: echo "PKG_OS=$( echo '${{ env.repo }}' | awk -F '[/-]' '{ print $2 }' )" >> $GITHUB_ENV
+        shell: bash
+      - run: echo "${{ env.domain }} / ${{ env.owner }} / ${{ env.repo }} / ${{ env.PKG_OS }} / ${{ env.PKG_NAME }}"
         shell: bash
       # - uses: ghastore/unixstore-debian-build@main
       #   with:
