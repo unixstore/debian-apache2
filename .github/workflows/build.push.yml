@@ -1,4 +1,4 @@
-name: "Debian"
+name: "Debian (Push)"
 
 on:
   - push
@@ -6,7 +6,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: "Build (Push)"
+    name: "Build"
     steps:
       - run: echo "PKG_NAME=$( echo '${{ github.repository }}' | awk -F 'debian-' '{print $2}' )" >> $GITHUB_ENV
         shell: bash
