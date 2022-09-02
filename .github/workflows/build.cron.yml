@@ -4,24 +4,29 @@ on:
   schedule:
     - cron: '0 */4 * * *'
 
+env:
+  domain: "${{ github.server_url }}"
+  owner: "${{ github.repository_owner }}"
+  repo: "${{ github.repository }}"
+
 jobs:
   build:
     runs-on: ubuntu-latest
     name: "Build"
     steps:
-      - run: echo "PKG_OS=$( echo '${{ github.repository }}' | awk -F '[/-]' '{print $2}' )" >> $GITHUB_ENV
+      - run: echo "PKG_OS=$( echo '${{ env.repo }}' | awk -F '[/-]' '{ print $2 }' )" >> $GITHUB_ENV
         shell: bash
-      - run: echo "PKG_NAME=$( echo '${{ github.repository }}' | awk -F 'debian-' '{print $2}' )" >> $GITHUB_ENV
+      - run: echo "PKG_NAME=$( echo '${{ env.repo }}' | awk -F '${{ env.PKG_OS }}-' '{ print $2 }' )" >> $GITHUB_ENV
         shell: bash
       - uses: ghastore/unixstore-debian-build@main
         with:
-          git_repo_src: "${{ github.server_url }}/${{ github.repository }}.git"
-          git_repo_dst: "${{ github.server_url }}/${{ github.repository_owner }}-${{ env.PKG_OS }}/${{ env.PKG_NAME }}.git"
+          git_repo_src: "${{ env.domain }}/${{ env.repo }}.git"
+          git_repo_dst: "${{ env.domain }}/${{ env.owner }}-${{ env.PKG_OS }}/${{ env.PKG_NAME }}.git"
           git_user: "${{ secrets.BOT_GITHUB_NAME }}"
           git_email: "${{ secrets.BOT_GITHUB_EMAIL }}"
           git_token: "${{ secrets.BOT_GITHUB_TOKEN }}"
           obs_user: "${{ secrets.OBS_USER }}"
           obs_password: "${{ secrets.OBS_PASSWORD }}"
           obs_token: "${{ secrets.OBS_TOKEN }}"
-          obs_project: "home:${{ github.repository_owner }}:${{ env.PKG_OS }}"
+          obs_project: "home:${{ env.owner }}:${{ env.PKG_OS }}"
           obs_package: "${{ env.PKG_NAME }}"
